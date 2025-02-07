@@ -1,11 +1,12 @@
 const express = require("express");
 const flatRouter = express.Router();
-const flatController = require("./FlatController");
+const flatController = require("./FlatController.js");
 
+// Temporary placeholder functions
 flatRouter.get("/", flatController.getFlats);
-flatRouter.patch("/", flatController.updateFlat);
-flatRouter.delete("/", flatController.deleteFlat);
-flatRouter.post("/", flatController.addFlat);
 flatRouter.get("/:id", flatController.getFlatById);
+flatRouter.post("/", flatController.addFlat);
+flatRouter.patch("/:id", flatController.upadteFlatById);
+flatRouter.delete("/:id", flatController.deleteFlat);
 
 module.exports = flatRouter;

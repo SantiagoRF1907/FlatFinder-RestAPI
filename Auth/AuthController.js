@@ -43,16 +43,18 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).send("Error login, err");
+    res
+      .status(500)
+      .send({ message: "An error ocurred when loging in", error: err });
   }
 };
 
 // User Registration
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, birthDate } = req.body;
 
-    if (!email || !password || !firstName || !lastName) {
+    if (!email || !password || !firstName || !lastName || !birthDate) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -61,17 +63,20 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 2);
     const newUser = new User({
       email,
       password: hashedPassword,
       firstName,
       lastName,
+      birthDate,
     });
 
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Server error, please try again later" });
+    res
+      .status(500)
+      .json({ message: "Server error, please try again later", error: err });
   }
 };

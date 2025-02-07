@@ -1,33 +1,55 @@
 const User = require("./UserModel.js");
 
-// Register User
-exports.register = async (req, res) => {
+// Get all users
+exports.getUsers = async (req, res) => {
   try {
-    const newUser = new User(req.body);
-    await newUser.save();
-    res.satus(201).send(newUser);
+    const users = await User.find();
+    res.status(201).send(users);
   } catch (err) {
-    res.status(400).send("Register user error: ", err);
+    res.status(500).send(err);
   }
 };
 
-// Login
-exports.login = async (req, res) => {
+// Get user by id
+exports.getUserById = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    if (email === undefined) {
-      res.status(400).send("Email is required");
-    }
-    if (password === undefined) {
-      res.status(400).send("Password is required");
-    }
-
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ _id: req.params.id });
     if (!user) {
-      res.status(404).send("The email you've entered is incorrect");
+      res.status(404).send("User not found");
     }
+    res.status(201).send(user);
   } catch (err) {
-    res.status(500).send("Error when login in", err);
+    res.status(500).send({ message: "Error when finding product", error: err });
+  }
+};
+
+// Update user
+exports.updateUserById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { email, password, firstName, lastName, birthDate, isAdmin } =
+      req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { email, password, firstName, lastName, birthDate, isAdmin } },
+      { new: true, runValidators: true }
+    );
+  } catch (err) {
+    res
+      .status(500)
+      .send({ message: "An error ocurred when updating user: ", error: err });
+  }
+};
+
+// Delete User
+exports.deleteUserById = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.send({ message: "User deleted" });
+  } catch (err) {
+    res
+      .status(500)
+      .send({ message: "An error ocurred when deleting user: ", error: err });
   }
 };
