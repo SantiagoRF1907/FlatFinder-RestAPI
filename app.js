@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const authRoutes = require("./Auth/AuthRoutes.js");
 const userRoutes = require("./API/User/UserRoutes.js");
 const flatRoutes = require("./API/Flat/FlatRoutes.js");
 const messageRoutes = require("./API/Message/MessageRoutes.js");
@@ -13,8 +14,10 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/flats", flatRoutes);
+app.use("/messages", messageRoutes);
 
 // Connect to MongoDB
 mongoose
