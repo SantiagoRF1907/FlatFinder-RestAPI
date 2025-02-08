@@ -8,6 +8,6 @@ flatRouter.get("/", flatController.getFlats);
 flatRouter.get("/:id", flatController.getFlatById);
 flatRouter.post("/", authMiddleware, flatController.addFlat);
 flatRouter.patch("/:id", authMiddleware, flatController.updateFlatById);
-flatRouter.delete("/:id", flatController.deleteFlat);
+flatRouter.delete("/:id", authMiddleware, flatController.deleteFlat);
 
 module.exports = flatRouter;

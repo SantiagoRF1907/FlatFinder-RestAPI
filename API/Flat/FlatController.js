@@ -160,14 +160,18 @@ exports.deleteFlat = async (req, res) => {
     if (flat.ownerId.toString() !== req.user.id) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to update this flat" });
-    } else {
-      await Flat.findOneAndDelete({ _id: req.params.id });
-      res.status(201).send({ message: "Flat deleted" });
+        .json({ message: "You are not authorized to delete this flat" });
     }
+
+    // Delete the flat
+    await Flat.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Flat deleted successfully" });
   } catch (err) {
     res
       .status(500)
-      .send({ message: "Server error please try again later", error: err });
+      .json({
+        message: "Server error, please try again later",
+        error: err.message,
+      });
   }
 };
