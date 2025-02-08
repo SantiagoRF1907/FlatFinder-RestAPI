@@ -38,8 +38,17 @@ exports.addFlat = async (req, res) => {
       yearBuilt,
       rentPrice,
       dateAvailable,
+      hasAC = false,
     } = req.body;
 
+    // Ensure authenticated user ID is available
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: User ID not found" });
+    }
+
+    // Validate required fields
     if (
       !city ||
       !streetName ||
@@ -49,24 +58,29 @@ exports.addFlat = async (req, res) => {
       !rentPrice ||
       !dateAvailable
     ) {
-      return res.status(400).send("All fields are required");
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newFlat = new Flat(
+    // Create new flat
+    const newFlat = new Flat({
       city,
       streetName,
       streetNo,
       areaSize,
       yearBuilt,
       rentPrice,
-      dateAvailable
-    );
+      dateAvailable,
+      hasAC,
+      ownerId: req.user.id,
+    });
+
     await newFlat.save();
-    res.status(201).send({ message: "Flat added", newFlat });
+
+    res.status(201).json({ message: "Flat added successfully", newFlat });
   } catch (err) {
     res
       .status(500)
-      .send({ message: "Server error please try again", error: err });
+      .json({ message: "Server error, please try again", error: err.message });
   }
 };
 

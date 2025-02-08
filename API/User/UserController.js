@@ -4,7 +4,7 @@ const User = require("./UserModel.js");
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
-    res.status(201).send(users);
+    res.status(200).send(users);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -17,7 +17,7 @@ exports.getUserById = async (req, res) => {
     if (!user) {
       res.status(404).send("User not found");
     }
-    res.status(201).send(user);
+    res.status(200).send(user);
   } catch (err) {
     res.status(500).send({ message: "Error when finding product", error: err });
   }
@@ -35,6 +35,12 @@ exports.updateUserById = async (req, res) => {
       { $set: { email, password, firstName, lastName, birthDate, isAdmin } },
       { new: true, runValidators: true }
     );
+
+    if (!updatedUser) {
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).send({ message: "User updated", user: updatedUser });
   } catch (err) {
     res
       .status(500)

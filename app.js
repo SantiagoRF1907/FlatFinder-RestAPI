@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use("/users/auth", authRoutes);
+app.use("/users", authRoutes);
 app.use("/users", userRoutes);
 app.use("/flats", flatRoutes);
 // app.use("/messages", messageRoutes);
