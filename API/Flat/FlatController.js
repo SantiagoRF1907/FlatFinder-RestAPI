@@ -84,27 +84,44 @@ exports.addFlat = async (req, res) => {
   }
 };
 
-// Update flat by id
+// Update flat by id (only if the user is the owner)
 exports.updateFlatById = async (req, res) => {
   try {
+    // Find the flat by ID
+    const flat = await Flat.findById(req.params.id);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat not found" });
+    }
+
+    // Check if the logged-in user is the owner
+    if (flat.ownerId.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to update this flat" });
+    }
+
+    // Extract allowed fields for update
     const {
       city,
       streetName,
       streetNo,
       areaSize,
+      hasAC,
       yearBuilt,
       rentPrice,
       dateAvailable,
     } = req.body;
 
-    const flat = await Flat.findByIdAndUpdate(
-      { _id: req.params.id },
+    // Update the flat
+    const updatedFlat = await Flat.findByIdAndUpdate(
+      req.params.id,
       {
         $set: {
           city,
           streetName,
           streetNo,
           areaSize,
+          hasAC,
           yearBuilt,
           rentPrice,
           dateAvailable,
@@ -113,22 +130,41 @@ exports.updateFlatById = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    if (!flat) {
-      res.status(404).send("Flat not found");
-    }
-    res.status(201).send({ message: "Flat updated", flat });
+    res
+      .status(200)
+      .json({ message: "Flat updated successfully", flat: updatedFlat });
   } catch (err) {
     res
       .status(500)
-      .send({ message: "Server error please try again later", error: err });
+      .json({ message: "Server error, please try again later", error: err });
   }
 };
 
 // Delete flat
 exports.deleteFlat = async (req, res) => {
   try {
-    await Flat.findOneAndDelete({ _id: req.params.id });
-    res.status(201).send({ message: "Flat deleted" });
+    // Find the flat by ID
+    const flat = await Flat.findById(req.params.id);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat not found" });
+    }
+
+    // Ensure authenticated user ID is available
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: User ID not found" });
+    }
+
+    // Check if the logged-in user is the owner
+    if (flat.ownerId.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to update this flat" });
+    } else {
+      await Flat.findOneAndDelete({ _id: req.params.id });
+      res.status(201).send({ message: "Flat deleted" });
+    }
   } catch (err) {
     res
       .status(500)

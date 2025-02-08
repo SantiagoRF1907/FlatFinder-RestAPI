@@ -7,7 +7,7 @@ const authMiddleware = require("../../Auth/AuthMiddleware.js");
 flatRouter.get("/", flatController.getFlats);
 flatRouter.get("/:id", flatController.getFlatById);
 flatRouter.post("/", authMiddleware, flatController.addFlat);
-flatRouter.patch("/:id", flatController.upadateFlatById);
+flatRouter.patch("/:id", authMiddleware, flatController.updateFlatById);
 flatRouter.delete("/:id", flatController.deleteFlat);
 
 module.exports = flatRouter;
