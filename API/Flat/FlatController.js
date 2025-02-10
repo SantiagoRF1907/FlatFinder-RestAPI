@@ -3,6 +3,12 @@ const Flat = require("./FlatModel.js");
 // Get all flats
 exports.getFlats = async (req, res) => {
   try {
+    // Ensure user is logged in
+    if (!req.user) {
+      return res
+        .status(403)
+        .json({ message: "Unathorized, log in to see this information" });
+    }
     const flats = await Flat.find();
     res.status(200).send(flats);
   } catch (err) {
@@ -15,6 +21,13 @@ exports.getFlats = async (req, res) => {
 // Get flat by id
 exports.getFlatById = async (req, res) => {
   try {
+    // Ensure user is logged in
+    if (!req.user) {
+      return res
+        .status(403)
+        .json({ message: "Unathorized, log in to see this information" });
+    }
+
     const flat = await Flat.findOne({ _id: req.params.id });
     if (!flat) {
       res.status(404).send("Flat not found");
