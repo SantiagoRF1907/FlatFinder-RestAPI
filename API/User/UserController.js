@@ -21,6 +21,12 @@ exports.getUsers = async (req, res) => {
 // Get user by id
 exports.getUserById = async (req, res) => {
   try {
+    // Ensure user is logged in
+    if (!req.user) {
+      return res
+        .status(403)
+        .json({ message: "Unathorized: User ID not found" });
+    }
     const user = await User.findOne({ _id: req.params.id });
     if (!user) {
       res.status(404).send("User not found");
