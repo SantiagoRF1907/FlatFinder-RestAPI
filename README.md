@@ -7,6 +7,26 @@
 - Test - Postman
 - Security - JasonWebToken(JWT), Bcrypt.js
 
+## Using Postman to Test API Requests
+
+Postman is a tool that allows you to send HTTP requests to your API for testing. Follow these steps to make requests correctly.
+
+### 1. Set up postman
+
+1. Open Postman and create a new request.
+2. Select the appropiate HTTP method (GET, POST, PATCH, DELETE, etc.).
+3. Enter the API endpoint URL (e.g. http://localhost:3000/users).
+
+### 2. Add Authorization Header (JWT)
+
+For most requests, authentication is required using a JWT (JSON Web Token).
+
+Go to the "Headers" tab.
+Add a new key-value pair:
+Key: Authorization
+Value: Bearer <your-jwt-token>
+(Replace <your-jwt-token> with a valid token obtained from the login response.)
+
 ## User
 
 ### Get all users
@@ -35,7 +55,7 @@ Example:
 Route: "/users/register"
 Request: DELETE
 Example:
-![Delete user by id example](./images/User/deleteUserById.png)
+![Delete user by id example](./images/User/deleteUser.png)
 
 ### Login
 
