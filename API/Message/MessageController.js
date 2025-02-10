@@ -1,4 +1,5 @@
 const Message = require("./MessageModel.js");
+const Flat = require("../Flat/FlatModel.js");
 
 // Add message
 exports.addMessage = async (req, res) => {
@@ -47,7 +48,7 @@ exports.getUserMessages = async (req, res) => {
     }
 
     // Ensure user is sender
-    if (!req.user || req.user._id !== req.params.senderId) {
+    if (!req.user || req.user._id.toString() !== req.params.senderId) {
       return res
         .status(403)
         .json({ message: "You are not authorized to view these messages" });
@@ -75,17 +76,17 @@ exports.getMessages = async (req, res) => {
     }
 
     // Check if the logged-in user is the owner
-    if (flat.ownerId.toString() !== req.user._id) {
+    if (flat.ownerId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "You are not authorized to see this flat's messages",
       });
     }
 
     const messages = await Message.find();
-    res.satus(200).send(messages);
+    res.status(200).send(messages);
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Server error, please try later", error: err });
+      .json({ message: "Server error, please try later", error: err.message });
   }
 };

@@ -107,7 +107,7 @@ exports.updateFlatById = async (req, res) => {
     }
 
     // Check if the logged-in user is the owner
-    if (flat.ownerId.toString() !== req.user._id) {
+    if (flat.ownerId.toString() !== req.user._id.toString()) {
       return res
         .status(403)
         .json({ message: "You are not authorized to update this flat" });
@@ -170,7 +170,7 @@ exports.deleteFlat = async (req, res) => {
     }
 
     // Check if the logged-in user is the owner
-    if (flat.ownerId.toString() !== req.user._id) {
+    if (flat.ownerId.toString() !== req.user._id.toString()) {
       return res
         .status(403)
         .json({ message: "You are not authorized to delete this flat" });

@@ -51,7 +51,7 @@ exports.updateUserById = async (req, res) => {
       req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { _id: id },
+      { _id: userId },
       { $set: { email, password, firstName, lastName, birthDate, isAdmin } },
       { new: true, runValidators: true }
     );
@@ -62,9 +62,10 @@ exports.updateUserById = async (req, res) => {
 
     res.status(200).send({ message: "User updated", user: updatedUser });
   } catch (err) {
-    res
-      .status(500)
-      .send({ message: "An error ocurred when updating user: ", error: err });
+    res.status(500).send({
+      message: "An error ocurred when updating user: ",
+      error: err.message,
+    });
   }
 };
 

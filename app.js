@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./Auth/AuthRoutes.js");
 const userRoutes = require("./API/User/UserRoutes.js");
 const flatRoutes = require("./API/Flat/FlatRoutes.js");
-// const messageRoutes = require("./API/Message/MessageRoutes.js");
+const messageRoutes = require("./API/Message/MessageRoutes.js");
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/users", authRoutes);
 app.use("/users", userRoutes);
 app.use("/flats", flatRoutes);
-// app.use("/messages", messageRoutes);
+app.use("/flats", messageRoutes);
 
 // Connect to MongoDB
 mongoose

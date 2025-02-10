@@ -4,8 +4,8 @@ const flatController = require("./FlatController.js");
 const { authMiddleware } = require("../../Auth/AuthMiddleware.js");
 
 // Temporary placeholder functions
-flatRouter.get("/", flatController.getFlats);
-flatRouter.get("/:id", flatController.getFlatById);
+flatRouter.get("/", authMiddleware, flatController.getFlats);
+flatRouter.get("/:id", authMiddleware, flatController.getFlatById);
 flatRouter.post("/", authMiddleware, flatController.addFlat);
 flatRouter.patch("/:id", authMiddleware, flatController.updateFlatById);
 flatRouter.delete("/:id", authMiddleware, flatController.deleteFlat);
