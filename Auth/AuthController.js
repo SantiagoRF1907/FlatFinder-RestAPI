@@ -52,7 +52,8 @@ exports.login = async (req, res) => {
 // User Registration
 exports.register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, birthDate } = req.body;
+    const { email, password, firstName, lastName, birthDate, isAdmin } =
+      req.body;
 
     if (!email || !password || !firstName || !lastName || !birthDate) {
       return res.status(400).json({ message: "All fields are required" });
@@ -70,6 +71,7 @@ exports.register = async (req, res) => {
       firstName,
       lastName,
       birthDate,
+      isAdmin,
     });
 
     await newUser.save();
