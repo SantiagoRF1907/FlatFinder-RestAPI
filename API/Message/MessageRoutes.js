@@ -1,7 +1,7 @@
 const express = require("express");
 const messageRouter = express.Router();
 const messageController = require("./MessageController.js");
-const authMiddleware = require("../../Auth/AuthMiddleware.js");
+const { authMiddleware } = require("../../Auth/AuthMiddleware.js");
 
 messageRouter.get(
   "/:id/messages",

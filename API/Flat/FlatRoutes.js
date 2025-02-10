@@ -1,7 +1,7 @@
 const express = require("express");
 const flatRouter = express.Router();
 const flatController = require("./FlatController.js");
-const authMiddleware = require("../../Auth/AuthMiddleware.js");
+const { authMiddleware } = require("../../Auth/AuthMiddleware.js");
 
 // Temporary placeholder functions
 flatRouter.get("/", flatController.getFlats);

@@ -1,27 +1,33 @@
 const jwt = require("jsonwebtoken");
-const User = require("../API/User/UserModel.js");
+const User = require("../API/User/UserModel.js"); // Import your User model
 
-const authMiddleware = async (req, res, next) => {
+exports.authMiddleware = async (req, res, next) => {
   try {
-    // Get token from request headers
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
+    // Check if Authorization header exists
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(401)
-        .json({ message: "No token, authorization denied" });
+        .json({ message: "Unauthorized: No token provided" });
     }
 
-    // Verify token
+    // Extract the token
+    const token = authHeader.split(" ")[1];
+
+    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user info to request
-    req.user = { id: decoded.id };
+    // Attach user info to the request
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized: User not found" });
+    }
 
-    next(); // Proceed to the next middleware/controller
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token, authentication failed" });
+    req.user = user; // Attach user to request
+    next();
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: Invalid token", error: err.message });
   }
 };
-
-module.exports = authMiddleware;
