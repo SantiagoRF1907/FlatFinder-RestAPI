@@ -37,7 +37,7 @@ exports.updateUserById = async (req, res) => {
     const userId = req.params.id;
 
     // Ensure user is acct owner or admin
-    if (!(req.user.isAdmin || req.user.id === userId || req.user)) {
+    if (!(req.user.isAdmin || req.user._id === userId || req.user)) {
       return res.status(403).json({ message: "Unauthorized action" });
     }
 
@@ -68,7 +68,7 @@ exports.deleteUserById = async (req, res) => {
     const userId = req.params.id;
 
     // Ensure user is acct owner or admin
-    if (!(req.user.isAdmin || req.user.id === userId || req.user)) {
+    if (!(req.user.isAdmin || req.user._id === userId || req.user)) {
       return res.status(403).json({ message: "Unauthorized action" });
     }
 

@@ -4,7 +4,7 @@ const Flat = require("./FlatModel.js");
 exports.getFlats = async (req, res) => {
   try {
     const flats = await Flat.find();
-    res.status(201).send(flats);
+    res.status(200).send(flats);
   } catch (err) {
     res
       .status(500)
@@ -42,7 +42,7 @@ exports.addFlat = async (req, res) => {
     } = req.body;
 
     // Ensure authenticated user ID is available
-    if (!req.user || !req.user.id) {
+    if (!req.user || !req.user._id) {
       return res
         .status(401)
         .json({ message: "Unauthorized: User ID not found" });
@@ -71,7 +71,7 @@ exports.addFlat = async (req, res) => {
       rentPrice,
       dateAvailable,
       hasAC,
-      ownerId: req.user.id,
+      ownerId: req.user._id,
     });
 
     await newFlat.save();
@@ -94,7 +94,7 @@ exports.updateFlatById = async (req, res) => {
     }
 
     // Check if the logged-in user is the owner
-    if (flat.ownerId.toString() !== req.user.id) {
+    if (flat.ownerId.toString() !== req.user._id) {
       return res
         .status(403)
         .json({ message: "You are not authorized to update this flat" });
@@ -150,14 +150,14 @@ exports.deleteFlat = async (req, res) => {
     }
 
     // Ensure authenticated user ID is available
-    if (!req.user || !req.user.id) {
+    if (!req.user || !req.user._id) {
       return res
         .status(401)
         .json({ message: "Unauthorized: User ID not found" });
     }
 
     // Check if the logged-in user is the owner
-    if (flat.ownerId.toString() !== req.user.id) {
+    if (flat.ownerId.toString() !== req.user._id) {
       return res
         .status(403)
         .json({ message: "You are not authorized to delete this flat" });
@@ -167,11 +167,9 @@ exports.deleteFlat = async (req, res) => {
     await Flat.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Flat deleted successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Server error, please try again later",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Server error, please try again later",
+      error: err.message,
+    });
   }
 };
