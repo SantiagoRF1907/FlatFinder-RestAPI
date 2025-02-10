@@ -100,7 +100,7 @@ Example:
 ### Get user messages
 
 Route: "/flats/:id/messages/:senderId"
-Request: POST
+Request: GET
 Example:
 ![Register user example](./images/getUserMessages.png)
 
